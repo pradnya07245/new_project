@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { registerUser } from "../services/authService";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Register() {
@@ -12,10 +13,23 @@ export default function Register() {
   });
 
   const [error, setError] = useState("");
+
+  const [show, setShow] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+
   const navigate = useNavigate();
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  const toggleShow = (field) => {
+    setShow((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,7 +54,7 @@ export default function Register() {
         transition={{ duration: 0.5 }}
         className="bg-white p-8 rounded-2xl shadow-lg w-[380px]"
       >
-        <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">
+        <h2 className="text-3xl font-bold text-center mb-6 text-blue-600 manrope">
           Create Account
         </h2>
 
@@ -49,41 +63,69 @@ export default function Register() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+          {/* Name */}
           <input
             type="text"
             name="name"
             placeholder="Enter your full name"
             onChange={handleChange}
-            className="border p-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-400"
+            className="border p-1.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
 
+          {/* Email */}
           <input
             type="email"
             name="email"
             placeholder="admin@gmail.com"
             onChange={handleChange}
-            className="border p-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-400"
+            className="border p-1.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="mahi@07"
-            onChange={handleChange}
-            className="border p-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-400"
-            required
-          />
+          {/* Password */}
+          <div className="relative">
+            <input
+              type={show.password ? "password" : "text"}  
+              name="password"
+              placeholder="Enter password"
+              onChange={handleChange}
+              className="w-full border p-1.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => toggleShow("password")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+             
+              {show.password ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            onChange={handleChange}
-            className="border p-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-400"
-            required
-          />
+          {/* Confirm Password */}
+          <div className="relative">
+            <input
+              type={show.confirmPassword ? "password" : "text"}  
+              name="confirmPassword"
+              placeholder="Confirm password"
+              onChange={handleChange}
+              className="w-full border p-1.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => toggleShow("confirmPassword")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              {show.confirmPassword ? (
+                <EyeOff size={18} />
+              ) : (
+                <Eye size={18} />
+              )}
+            </button>
+          </div>
 
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -93,26 +135,6 @@ export default function Register() {
           </motion.button>
         </form>
 
-        {/* OR Divider */}
-        <div className="flex items-center my-5">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="mx-3 text-sm text-gray-400">OR</span>
-          <div className="flex-grow border-t border-gray-300"></div>
-        </div>
-
-        {/* Google Button */}
-        <button
-          type="button"
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 py-2 rounded-lg hover:bg-gray-50 transition font-medium"
-        >
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="google"
-            className="w-5 h-5"
-          />
-          Continue with Google
-        </button>
-
         <p className="text-center mt-5 text-sm text-gray-600">
           Already have an account?{" "}
           <Link to="/" className="text-blue-600 font-semibold hover:underline">
@@ -120,6 +142,15 @@ export default function Register() {
           </Link>
         </p>
       </motion.div>
+
+      <style>
+        {`
+          input::-ms-reveal,
+          input::-ms-clear {
+            display: none;
+          }
+        `}
+      </style>
     </div>
   );
 }
